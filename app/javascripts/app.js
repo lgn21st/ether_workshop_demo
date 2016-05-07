@@ -1,7 +1,5 @@
-
 window.onload = function() {
 	var accounts = web3.eth.accounts;
-	var conference = Conference.at(Conference.deployed_address);
 
 	$("#confAddress").html(Conference.deployed_address);
 
@@ -120,5 +118,4 @@ window.onload = function() {
 	// Set value of wallet to accounts[1]
 	$("#buyerAddress").val(accounts[1]);
 	$("#refBuyerAddress").val(accounts[1]);
-
 };

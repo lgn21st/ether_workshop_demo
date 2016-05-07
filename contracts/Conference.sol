@@ -1,16 +1,25 @@
 contract Conference {
   address public organizer;
   mapping (address => uint) public registrantsPaid;
-  uint public numRegistrants; uint public quota;
+  uint public quota;
+  uint public numRegistrants;
 
-  event Deposit(address _from, uint _amount);  // so you can log these events
+  // so you can log these events
+  event Deposit(address _from, uint _amount);
   event Refund(address _to, uint _amount);
 
-  function Conference() { // Constructor
+  // Constructor
+  function Conference() {
     organizer = msg.sender;
     quota = 500;
     numRegistrants = 0;
   }
+
+  function changeQuota(uint newquota) public {
+    if (msg.sender != organizer) { return; }
+    quota = newquota;
+  }
+
   function buyTicket() public returns (bool success) {
     if (numRegistrants >= quota) { return false; }
     registrantsPaid[msg.sender] = msg.value;
@@ -18,10 +27,7 @@ contract Conference {
     Deposit(msg.sender, msg.value);
     return true;
   }
-  function changeQuota(uint newquota) public {
-    if (msg.sender != organizer) { return; }
-    quota = newquota;
-  }
+
   function refundTicket(address recipient, uint amount) public {
     if (msg.sender != organizer) { return; }
     if (registrantsPaid[recipient] == amount) {
@@ -34,6 +40,7 @@ contract Conference {
       }
     }
   }
+
   function destroy() { // so funds not locked in contract forever
     if (msg.sender == organizer) {
       suicide(organizer); // send funds to organizer
